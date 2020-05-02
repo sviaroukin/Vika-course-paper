@@ -788,12 +788,12 @@ void DeleteAccount(Accounts* arr_of_accounts, int& number_of_accounts)
 void WriteNewArrayInFile(Accounts* arr_of_accounts, int& number_of_accounts)
 {
 	ofstream fout(FILE_OF_PASSWORLD);
-	for (int i = 0; i < number_of_accounts; i++)
+	int i;
+	for (i = 0; i < number_of_accounts - 1; i++)
 	{
 		fout << arr_of_accounts[i].login << '\t' << arr_of_accounts[i].password << '\t' << arr_of_accounts[i].role << '\t' << arr_of_accounts[i].access << endl;
-		if (i < number_of_accounts - 1)
-			fout << endl;
 	}
+	fout << arr_of_accounts[i].login << '\t' << arr_of_accounts[i].password << '\t' << arr_of_accounts[i].role << '\t' << arr_of_accounts[i].access;
 	fout.close();
 }
 
