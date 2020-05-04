@@ -81,16 +81,15 @@ int get_size_of_array();
 void readFile(Accounts* arr_of_accounts, int& number_of_accounts);
 Accounts* menu_of_authorization(Accounts* arr_of_accounts, int& number_of_accounts);
 int letter_protection();
-void login(Accounts* arr_of_accounts, int& number_of_accounts);
+void login(Accounts** arr_of_accounts, int& number_of_accounts);
 string password();
 int enter_login(bool& correct_login, string login, Accounts* arr_of_accounts, int& number_of_accounts);
 bool chose_of_action(bool& correct_login, Accounts* arr_of_accounts, int& number_of_accounts);
-void menu(Accounts* arr_of_accounts, int& number_of_accounts, int role);
 Accounts* getRememberForArray(Accounts* arr_of_accounts, int& number_of_accounts, int new_number);
 void Add_an_account(Accounts* arr_of_accounts, int& number_of_accounts);
-void menu(Accounts* arr_of_accounts, int& number_of_accounts, int role);
-void admin_menu(Accounts* arr_of_accounts, int& number_of_accounts);
-void Account_management(Accounts* arr_of_accounts, int& number_of_accounts);
+void menu(Accounts** arr_of_accounts, int& number_of_accounts, int role);
+void admin_menu(Accounts** arr_of_accounts, int& number_of_accounts);
+void Account_management(Accounts** arr_of_accounts, int& number_of_accounts);
 void ToViewTheAccounts(Accounts* arr_of_accounts, int& number_of_accounts);
 void EditAnAccounts(Accounts* arr_of_accounts, int& number_of_accounts);
 string Change_login(Accounts* arr_of_accounts, int& number_of_accounts);
@@ -187,7 +186,7 @@ Accounts* menu_of_authorization(Accounts* arr_of_accounts, int& number_of_accoun
 
 		switch (choise)
 		{
-		case 1:login(arr_of_accounts, number_of_accounts);
+		case 1:login(&arr_of_accounts, number_of_accounts);
 			break;
 		case 2: arr_of_accounts = getRememberForArray(arr_of_accounts, number_of_accounts, number_of_accounts + 1);
 			Add_an_account(arr_of_accounts, number_of_accounts);
@@ -219,22 +218,22 @@ int letter_protection()
 	return number;
 }
 
-void login(Accounts* arr_of_accounts, int& number_of_accounts)
+void login(Accounts** arr_of_accounts, int& number_of_accounts)
 {
 	bool correct_login = true;
 	int right_login;
 	string login;
-	right_login = enter_login(correct_login, login, arr_of_accounts, number_of_accounts);
+	right_login = enter_login(correct_login, login, *arr_of_accounts, number_of_accounts);
 	while (correct_login)
 	{
 		cout << "                                  ================================================================" << endl;
 		cout << "                                  |                         Enter password                       |" << endl;
 		cout << "                                                       ->";
-		if (password() == arr_of_accounts[right_login].password)
+		if (password() == (*arr_of_accounts)[right_login].password)
 		{
-			if (arr_of_accounts[right_login].access == 0)
+			if ((*arr_of_accounts)[right_login].access == 0)
 			{
-				menu(arr_of_accounts, number_of_accounts, arr_of_accounts[right_login].role);
+				menu(arr_of_accounts, number_of_accounts, (*arr_of_accounts)[right_login].role);
 				correct_login = false;
 			}
 			else
@@ -250,7 +249,7 @@ void login(Accounts* arr_of_accounts, int& number_of_accounts)
 			system("cls");
 			cout << "                                  ================================================================" << endl;
 			cout << "                                  |                          Invalid password                    |" << endl;
-			correct_login = chose_of_action(correct_login, arr_of_accounts, number_of_accounts);
+			correct_login = chose_of_action(correct_login, *arr_of_accounts, number_of_accounts);
 		}
 	}
 }
@@ -375,7 +374,7 @@ Accounts* getRememberForArray(Accounts* arr_of_accounts, int& number_of_accounts
 	return arr_of_accounts;        //return new array
 }
 
-void menu(Accounts* arr_of_accounts, int& number_of_accounts, int role)
+void menu(Accounts** arr_of_accounts, int& number_of_accounts, int role)
 {
 	if (role == 0)
 	{
@@ -398,7 +397,7 @@ void menu(Accounts* arr_of_accounts, int& number_of_accounts, int role)
 		}
 }
 
-void admin_menu(Accounts* arr_of_accounts, int& number_of_accounts)
+void admin_menu(Accounts** arr_of_accounts, int& number_of_accounts)
 {
 	int number; bool admin = true;
 	while (admin)
@@ -412,8 +411,11 @@ void admin_menu(Accounts* arr_of_accounts, int& number_of_accounts)
 		number = letter_protection();
 		switch (number)
 		{
-		case 1: Account_management(arr_of_accounts, number_of_accounts);
+		case 1: 
+		{
+			Account_management(arr_of_accounts, number_of_accounts);
 			break;
+		}
 		case 2:
 			break;
 		case 0: admin = false;
@@ -427,7 +429,7 @@ void admin_menu(Accounts* arr_of_accounts, int& number_of_accounts)
 	}
 }
 
-void Account_management(Accounts* arr_of_accounts, int& number_of_accounts)
+void Account_management(Accounts** arr_of_accounts, int& number_of_accounts)
 {
 	int chose;
 	bool cycle = true;
@@ -443,14 +445,14 @@ void Account_management(Accounts* arr_of_accounts, int& number_of_accounts)
 		chose = letter_protection();
 		switch (chose)
 		{
-		case 1:ToViewTheAccounts(arr_of_accounts, number_of_accounts);
+		case 1:ToViewTheAccounts(*arr_of_accounts, number_of_accounts);
 			break;
-		case 2:arr_of_accounts = getRememberForArray(arr_of_accounts, number_of_accounts, number_of_accounts + 1);
-			Add_an_account(arr_of_accounts, number_of_accounts);
+		case 2:*arr_of_accounts = getRememberForArray(*arr_of_accounts, number_of_accounts, number_of_accounts + 1);
+			Add_an_account(*arr_of_accounts, number_of_accounts);
 			break;
-		case 3:EditAnAccounts(arr_of_accounts, number_of_accounts);
+		case 3:EditAnAccounts(*arr_of_accounts, number_of_accounts);
 			break;
-		case 4: DeleteAccount(arr_of_accounts, number_of_accounts);
+		case 4: DeleteAccount(*arr_of_accounts, number_of_accounts);
 			break;
 		case 0:cycle = false;
 			break;
@@ -789,12 +791,15 @@ void WriteNewArrayInFile(Accounts* arr_of_accounts, int& number_of_accounts)
 {
 	ofstream fout(FILE_OF_PASSWORLD);
 	int i;
-	for (i = 0; i < number_of_accounts - 1; i++)
+	if (fout.is_open())
 	{
-		fout << arr_of_accounts[i].login << '\t' << arr_of_accounts[i].password << '\t' << arr_of_accounts[i].role << '\t' << arr_of_accounts[i].access << endl;
+		for (i = 0; i < number_of_accounts - 1; i++)
+		{
+			fout << arr_of_accounts[i].login << '\t' << arr_of_accounts[i].password << '\t' << arr_of_accounts[i].role << '\t' << arr_of_accounts[i].access << endl;
+		}
+		fout << arr_of_accounts[i].login << '\t' << arr_of_accounts[i].password << '\t' << arr_of_accounts[i].role << '\t' << arr_of_accounts[i].access;
+		fout.close();
 	}
-	fout << arr_of_accounts[i].login << '\t' << arr_of_accounts[i].password << '\t' << arr_of_accounts[i].role << '\t' << arr_of_accounts[i].access;
-	fout.close();
 }
 
 // Меню не возвращает правильный аккаунт или WriteNewArray не работает
